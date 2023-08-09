@@ -1,25 +1,22 @@
 // Write your helper functions here!
 require('isomorphic-fetch');
 
-// Reference objects for global scope
+// pass in Mission Target div location and planet array
+function addDestinationInfo(document, chosenPlanet) {
+    const missionTarget = document.getElementById("missionTarget");
+    
+    missionTarget.innerHTML = `
 
-
-
-
-
-function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
-   // Here is the HTML formatting for our mission target div.
-   /*
                 <h2>Mission Destination</h2>
                 <ol>
-                    <li>Name: </li>
-                    <li>Diameter: </li>
-                    <li>Star: ${star}</li>
-                    <li>Distance from Earth: </li>
-                    <li>Number of Moons: </li>
+                    <li>Name: ${chosenPlanet.name}</li>
+                    <li>Diameter: ${chosenPlanet.diameter}</li>
+                    <li>Star: ${chosenPlanet.star}</li>
+                    <li>Distance from Earth: ${chosenPlanet.distance}</li>
+                    <li>Number of Moons: ${chosenPlanet.moons}</li>
                 </ol>
-                <img src="">
-   */
+                <img src="${chosenPlanet.image}">
+            `;
 }
 
 function validateInput(testInput) {
@@ -51,10 +48,12 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
     // Alert if empty fields
     if (pilotValidation === "Empty" || copilotValidation === "Empty" || fuelLevelValidation === "Empty" || cargoMassValidation === "Empty"){
         alert("All fields are required!");
+        return;
     }
     // Alert if invalid information in form
     else if (pilotValidation === "Is a Number" || copilotValidation === "Is a Number" || fuelLevelValidation === "Not a Number" || cargoMassValidation === "Not a Number") {
         alert("Make sure to enter valid information for each field!");
+        return;
     }
     // Update pilot and copilot status
         pilotStatus.innerHTML = `Pilot ${pilot} is ready for launch`;
@@ -89,16 +88,16 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
 async function myFetch() {
     let planetsReturned;
 
-    const response = await fetch("https://handlers.education.launchcode.org/static/planets.json");
-    //Extract JSON data from response object
-    planetsReturned = await response.json();
-    //Return JSON
+    planetsReturned = await fetch("https://handlers.education.launchcode.org/static/planets.json").then( function(response) {
+        return response.json();
+    });
+    
     return planetsReturned;
 }
 
-
 function pickPlanet(planets) {
-    // let planets = myFetch;
+    let randomIndex = Math.floor(Math.random() * planets.length);
+    return planets[randomIndex];
 }
 
 module.exports.addDestinationInfo = addDestinationInfo;
